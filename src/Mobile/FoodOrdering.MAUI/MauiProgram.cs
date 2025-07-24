@@ -33,7 +33,7 @@ public static class MauiProgram
         //builder.Services.AddTransient<MenuPage>();
         //builder.Services.AddTransient<CartPage>();
         //builder.Services.AddTransient<OrdersPage>();
-        builder.Services.AddTransient<VendorOrdersPage>();
+        //builder.Services.AddTransient<VendorOrdersPage>();
 
         return builder.Build();
     }

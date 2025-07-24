@@ -7,7 +7,7 @@ using FoodOrdering.API.Services;
 namespace FoodOrdering.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
