@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="FoodOrderingUI.Views.BuildingsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FoodOrderingUI.ViewModels"
+             xmlns:models="clr-namespace:FoodOrderingUI.Models"
+             x:DataType="vm:BuildingsViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+                     IconImageSource="cart.png"
+                     Command="{Binding ViewCartCommand}">
+            <ToolbarItem.Text>
+                <MultiBinding StringFormat="Cart ({0})">
+                    <Binding Path="CartItemCount"/>
+                </MultiBinding>
+            </ToolbarItem.Text>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
+    <RefreshView Command="{Binding LoadBuildingsCommand}"
+                 IsRefreshing="{Binding IsBusy}">
+
+        <ScrollView>
+            <StackLayout Padding="20" Spacing="20">
+
+                <!-- Welcome Section -->
+                <StackLayout BackgroundColor="#F8F9FA" Padding="20" Margin="0,0,0,20">
+                    <StackLayout.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#2196F3" Offset="0.0" />
+                            <GradientStop Color="#1976D2" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </StackLayout.Background>
+                    
+                    <Label Text="Welcome to Corporate Food Hub"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"/>
+                    
+                    <Label Text="Choose your building to explore delicious food options"
+                           FontSize="14"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           Opacity="0.9"/>
+                </StackLayout>
+
+                <!-- Buildings Grid -->
+                <CollectionView ItemsSource="{Binding Buildings}"
+                                IsVisible="{Binding HasBuildings}">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" Span="2" />
+                    </CollectionView.ItemsLayout>
+                    
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Building">
+                            <Border BackgroundColor="White"
+                                    Stroke="#E0E0E0"
+                                    StrokeThickness="1"
+                                    Margin="5"
+                                    Padding="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="15"/>
+                                </Border.StrokeShape>
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BuildingsViewModel}}, Path=SelectBuildingCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+
+                                <StackLayout Spacing="0">
+                                    <!-- Building Image -->
+                                    <Image Source="{Binding ImageUrl}"
+                                           HeightRequest="120"
+                                           Aspect="AspectFill">
+                                        <Image.Clip>
+                                            <RoundRectangleGeometry CornerRadius="15,15,0,0" 
+                                                                    Rect="0,0,200,120"/>
+                                        </Image.Clip>
+                                    </Image>
+
+                                    <!-- Building Info -->
+                                    <StackLayout Padding="15" Spacing="5">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="#333"
+                                               LineBreakMode="TailTruncation"/>
+
+                                        <Label Text="{Binding Location}"
+                                               FontSize="12"
+                                               TextColor="#666"/>
+
+                                        <Label Text="{Binding Description}"
+                                               FontSize="11"
+                                               TextColor="#999"
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="2"/>
+
+                                        <!-- Canteen Count -->
+                                        <StackLayout Orientation="Horizontal" Margin="0,5,0,0">
+                                            <Label Text="🍽️"
+                                                   FontSize="12"/>
+                                            <Label Text="{Binding Canteens.Count, StringFormat='{0} Canteens'}"
+                                                   FontSize="12"
+                                                   TextColor="#2196F3"
+                                                   FontAttributes="Bold"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </StackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Empty State -->
+                <StackLayout IsVisible="{Binding HasBuildings, Converter={StaticResource InvertedBoolConverter}}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Margin="0,50,0,0">
+                    <Label Text="🏢"
+                           FontSize="48"
+                           HorizontalOptions="Center"/>
+                    <Label Text="No buildings available"
+                           FontSize="18"
+                           TextColor="#666"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Please check back later"
+                           FontSize="14"
+                           TextColor="#999"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+
+            </StackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

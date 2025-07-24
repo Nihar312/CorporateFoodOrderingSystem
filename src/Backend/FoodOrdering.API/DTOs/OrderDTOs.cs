@@ -1,4 +1,4 @@
-﻿using FoodOrdering.API.Models;
+using FoodOrdering.API.Models;
 
 namespace FoodOrdering.API.DTOs
 {
@@ -11,7 +11,7 @@ namespace FoodOrdering.API.DTOs
 
     public class OrderItemDto
     {
-        public int MenuItomId { get; set; }
+        public int MenuItemId { get; set; }
         public int Quantity { get; set; }
         public string? Notes { get; set; }
     }
@@ -35,8 +35,8 @@ namespace FoodOrdering.API.DTOs
     public class OrderItemResponseDto
     {
         public int Id { get; set; }
-        public int MenuItomId { get; set; }
-        public string MenuItomName { get; set; } = string.Empty;
+        public int MenuItemId { get; set; }
+        public string MenuItemName { get; set; } = string.Empty;
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public string? Notes { get; set; }

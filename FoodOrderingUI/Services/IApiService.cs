@@ -1,4 +1,4 @@
-﻿using FoodOrderingUI.Models;
+using FoodOrderingUI.Models;
 using MenuItem = FoodOrderingUI.Models.MenuItem;
 
 namespace FoodOrderingUI.Services
@@ -7,8 +7,14 @@ namespace FoodOrderingUI.Services
     {
         Task<AuthResponse> LoginAsync(string email, string password);
         Task<AuthResponse> RegisterAsync(string email, string password, string firstName, string lastName, string? companyName = null);
+        Task<List<Building>> GetBuildingsAsync();
+        Task<Building> GetBuildingAsync(int id);
+        Task<List<Canteen>> GetCanteensAsync();
+        Task<List<Canteen>> GetCanteensByBuildingAsync(int buildingId);
+        Task<Canteen> GetCanteenAsync(int id);
         Task<List<MenuItem>> GetMenuItemsAsync();
-        Task<List<MenuItem>> GetMenuByVendorAsync(string vendorId);
+        Task<List<MenuItem>> GetMenuByCanteenAsync(int canteenId);
+        Task<List<MenuItem>> GetMenuByCanteenAndCategoryAsync(int canteenId, int category);
         Task<Order> CreateOrderAsync(CreateOrderRequest request);
         Task<List<Order>> GetMyOrdersAsync();
         Task<List<Order>> GetVendorOrdersAsync();

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using FoodOrdering.API.Data;
 using FoodOrdering.API.DTOs;
@@ -17,65 +17,85 @@ namespace FoodOrdering.API.Services
             _mapper = mapper;
         }
 
-        public async Task<List<MenuItomResponseDto>> GetAllMenuItomsAsync()
+        public async Task<List<MenuItemResponseDto>> GetAllMenuItemsAsync()
         {
-            var MenuItoms = await _context.MenuItoms
+            var menuItems = await _context.MenuItems
+                .Include(m => m.Canteen)
+                    .ThenInclude(c => c.Building)
                 .Include(m => m.Vendor)
                 .Where(m => m.IsAvailable)
                 .ToListAsync();
 
-            return _mapper.Map<List<MenuItomResponseDto>>(MenuItoms);
+            return _mapper.Map<List<MenuItemResponseDto>>(menuItems);
         }
 
-        public async Task<List<MenuItomResponseDto>> GetMenuByVendorAsync(string vendorId)
+        public async Task<List<MenuItemResponseDto>> GetMenuByCanteenAsync(int canteenId)
         {
-            var MenuItoms = await _context.MenuItoms
+            var menuItems = await _context.MenuItems
+                .Include(m => m.Canteen)
+                    .ThenInclude(c => c.Building)
                 .Include(m => m.Vendor)
-                .Where(m => m.VendorId == vendorId && m.IsAvailable)
+                .Where(m => m.CanteenId == canteenId && m.IsAvailable)
                 .ToListAsync();
 
-            return _mapper.Map<List<MenuItomResponseDto>>(MenuItoms);
+            return _mapper.Map<List<MenuItemResponseDto>>(menuItems);
         }
 
-        public async Task<MenuItomResponseDto> CreateMenuItomAsync(string vendorId, CreateMenuItomDto MenuItomDto)
+        public async Task<List<MenuItemResponseDto>> GetMenuByCanteenAndCategoryAsync(int canteenId, int category)
         {
-            var MenuItom = _mapper.Map<MenuItom>(MenuItomDto);
-            MenuItom.VendorId = vendorId;
+            var menuItems = await _context.MenuItems
+                .Include(m => m.Canteen)
+                    .ThenInclude(c => c.Building)
+                .Include(m => m.Vendor)
+                .Where(m => m.CanteenId == canteenId && (int)m.Category == category && m.IsAvailable)
+                .ToListAsync();
 
-            _context.MenuItoms.Add(MenuItom);
+            return _mapper.Map<List<MenuItemResponseDto>>(menuItems);
+        }
+
+        public async Task<MenuItemResponseDto> CreateMenuItemAsync(string vendorId, CreateMenuItemDto menuItemDto)
+        {
+            var menuItem = _mapper.Map<MenuItem>(menuItemDto);
+            menuItem.VendorId = vendorId;
+
+            _context.MenuItems.Add(menuItem);
             await _context.SaveChangesAsync();
 
-            var createdItem = await _context.MenuItoms
+            var createdItem = await _context.MenuItems
+                .Include(m => m.Canteen)
+                    .ThenInclude(c => c.Building)
                 .Include(m => m.Vendor)
-                .FirstOrDefaultAsync(m => m.Id == MenuItom.Id);
+                .FirstOrDefaultAsync(m => m.Id == menuItem.Id);
 
-            return _mapper.Map<MenuItomResponseDto>(createdItem);
+            return _mapper.Map<MenuItemResponseDto>(createdItem);
         }
 
-        public async Task<MenuItomResponseDto> UpdateMenuItomAsync(int id, string vendorId, CreateMenuItomDto MenuItomDto)
+        public async Task<MenuItemResponseDto> UpdateMenuItemAsync(int id, string vendorId, CreateMenuItemDto menuItemDto)
         {
-            var MenuItom = await _context.MenuItoms
+            var menuItem = await _context.MenuItems
+                .Include(m => m.Canteen)
+                    .ThenInclude(c => c.Building)
                 .Include(m => m.Vendor)
                 .FirstOrDefaultAsync(m => m.Id == id && m.VendorId == vendorId);
 
-            if (MenuItom == null)
+            if (menuItem == null)
                 throw new ArgumentException("Menu item not found");
 
-            _mapper.Map(MenuItomDto, MenuItom);
+            _mapper.Map(menuItemDto, menuItem);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<MenuItomResponseDto>(MenuItom);
+            return _mapper.Map<MenuItemResponseDto>(menuItem);
         }
 
-        public async Task<bool> DeleteMenuItomAsync(int id, string vendorId)
+        public async Task<bool> DeleteMenuItemAsync(int id, string vendorId)
         {
-            var MenuItom = await _context.MenuItoms
+            var menuItem = await _context.MenuItems
                 .FirstOrDefaultAsync(m => m.Id == id && m.VendorId == vendorId);
 
-            if (MenuItom == null)
+            if (menuItem == null)
                 return false;
 
-            _context.MenuItoms.Remove(MenuItom);
+            _context.MenuItems.Remove(menuItem);
             await _context.SaveChangesAsync();
 
             return true;

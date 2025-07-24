@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using FoodOrdering.API.DTOs;
@@ -18,34 +18,41 @@ namespace FoodOrdering.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMenuItoms()
+        public async Task<IActionResult> GetAllMenuItems()
         {
-            var MenuItoms = await _menuService.GetAllMenuItomsAsync();
-            return Ok(MenuItoms);
+            var menuItems = await _menuService.GetAllMenuItemsAsync();
+            return Ok(menuItems);
         }
 
-        [HttpGet("vendor/{vendorId}")]
-        public async Task<IActionResult> GetMenuByVendor(string vendorId)
+        [HttpGet("canteen/{canteenId}")]
+        public async Task<IActionResult> GetMenuByCanteen(int canteenId)
         {
-            var MenuItoms = await _menuService.GetMenuByVendorAsync(vendorId);
-            return Ok(MenuItoms);
+            var menuItems = await _menuService.GetMenuByCanteenAsync(canteenId);
+            return Ok(menuItems);
+        }
+
+        [HttpGet("canteen/{canteenId}/category/{category}")]
+        public async Task<IActionResult> GetMenuByCanteenAndCategory(int canteenId, int category)
+        {
+            var menuItems = await _menuService.GetMenuByCanteenAndCategoryAsync(canteenId, category);
+            return Ok(menuItems);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Vendor")]
-        public async Task<IActionResult> CreateMenuItom([FromBody] CreateMenuItomDto MenuItomDto)
+        [Authorize(Roles = "Vendor,Admin")]
+        public async Task<IActionResult> CreateMenuItem([FromBody] CreateMenuItemDto menuItemDto)
         {
             var vendorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(vendorId))
                 return Unauthorized();
 
-            var MenuItom = await _menuService.CreateMenuItomAsync(vendorId, MenuItomDto);
-            return Ok(MenuItom);
+            var menuItem = await _menuService.CreateMenuItemAsync(vendorId, menuItemDto);
+            return Ok(menuItem);
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Vendor")]
-        public async Task<IActionResult> UpdateMenuItom(int id, [FromBody] CreateMenuItomDto MenuItomDto)
+        [Authorize(Roles = "Vendor,Admin")]
+        public async Task<IActionResult> UpdateMenuItem(int id, [FromBody] CreateMenuItemDto menuItemDto)
         {
             try
             {
@@ -53,8 +60,8 @@ namespace FoodOrdering.API.Controllers
                 if (string.IsNullOrEmpty(vendorId))
                     return Unauthorized();
 
-                var MenuItom = await _menuService.UpdateMenuItomAsync(id, vendorId, MenuItomDto);
-                return Ok(MenuItom);
+                var menuItem = await _menuService.UpdateMenuItemAsync(id, vendorId, menuItemDto);
+                return Ok(menuItem);
             }
             catch (ArgumentException ex)
             {
@@ -63,14 +70,14 @@ namespace FoodOrdering.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Vendor")]
-        public async Task<IActionResult> DeleteMenuItom(int id)
+        [Authorize(Roles = "Vendor,Admin")]
+        public async Task<IActionResult> DeleteMenuItem(int id)
         {
             var vendorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(vendorId))
                 return Unauthorized();
 
-            var result = await _menuService.DeleteMenuItomAsync(id, vendorId);
+            var result = await _menuService.DeleteMenuItemAsync(id, vendorId);
             if (result)
                 return Ok();
 

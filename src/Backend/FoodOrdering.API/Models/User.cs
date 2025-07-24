@@ -1,4 +1,4 @@
-﻿// Models/User.cs
+// Models/User.cs
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
@@ -16,7 +16,7 @@ namespace FoodOrdering.API.Models
 
         // Navigation properties
         public ICollection<Order> Orders { get; set; } = new List<Order>();
-        public ICollection<MenuItom> MenuItoms { get; set; } = new List<MenuItom>();
+        public ICollection<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
     }
 
     public enum UserType

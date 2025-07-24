@@ -1,4 +1,4 @@
-﻿using FoodOrderingUI.Services;
+using FoodOrderingUI.Services;
 using FoodOrderingUI.ViewModels;
 using FoodOrderingUI.Views;
 using Microsoft.Extensions.Logging;
@@ -24,6 +24,8 @@ namespace FoodOrderingUI
 
             // ViewModels
             builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<BuildingsViewModel>();
+            builder.Services.AddTransient<CanteensViewModel>();
             builder.Services.AddTransient<MenuViewModel>();
             builder.Services.AddTransient<CartViewModel>();
             builder.Services.AddTransient<OrdersViewModel>();
@@ -31,10 +33,12 @@ namespace FoodOrderingUI
 
             // Views
             builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<SplashPage>();
+            builder.Services.AddTransient<BuildingsPage>();
+            builder.Services.AddTransient<CanteensPage>();
             builder.Services.AddTransient<MenuPage>();
             builder.Services.AddTransient<CartPage>();
             builder.Services.AddTransient<OrdersPage>();
-            //builder.Services.AddTransient<VendorOrdersPage>();
 
             return builder.Build();
 

@@ -1,13 +1,14 @@
-﻿using FoodOrdering.API.DTOs;
+using FoodOrdering.API.DTOs;
 
 namespace FoodOrdering.API.Services
 {
     public interface IMenuService
     {
-        Task<List<MenuItomResponseDto>> GetAllMenuItomsAsync();
-        Task<List<MenuItomResponseDto>> GetMenuByVendorAsync(string vendorId);
-        Task<MenuItomResponseDto> CreateMenuItomAsync(string vendorId, CreateMenuItomDto MenuItomDto);
-        Task<MenuItomResponseDto> UpdateMenuItomAsync(int id, string vendorId, CreateMenuItomDto MenuItomDto);
-        Task<bool> DeleteMenuItomAsync(int id, string vendorId);
+        Task<List<MenuItemResponseDto>> GetAllMenuItemsAsync();
+        Task<List<MenuItemResponseDto>> GetMenuByCanteenAsync(int canteenId);
+        Task<List<MenuItemResponseDto>> GetMenuByCanteenAndCategoryAsync(int canteenId, int category);
+        Task<MenuItemResponseDto> CreateMenuItemAsync(string vendorId, CreateMenuItemDto menuItemDto);
+        Task<MenuItemResponseDto> UpdateMenuItemAsync(int id, string vendorId, CreateMenuItemDto menuItemDto);
+        Task<bool> DeleteMenuItemAsync(int id, string vendorId);
     }
 }

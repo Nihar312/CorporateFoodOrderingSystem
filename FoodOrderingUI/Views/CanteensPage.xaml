@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="FoodOrderingUI.Views.CanteensPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FoodOrderingUI.ViewModels"
+             xmlns:models="clr-namespace:FoodOrderingUI.Models"
+             x:DataType="vm:CanteensViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+                     IconImageSource="cart.png"
+                     Command="{Binding ViewCartCommand}">
+            <ToolbarItem.Text>
+                <MultiBinding StringFormat="Cart ({0})">
+                    <Binding Path="CartItemCount"/>
+                </MultiBinding>
+            </ToolbarItem.Text>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
+    <RefreshView Command="{Binding LoadCanteensCommand}"
+                 IsRefreshing="{Binding IsBusy}">
+
+        <ScrollView>
+            <StackLayout Padding="20" Spacing="20">
+
+                <!-- Building Info Header -->
+                <Border BackgroundColor="#F8F9FA" 
+                        Stroke="#E0E0E0"
+                        StrokeThickness="1"
+                        Padding="20"
+                        IsVisible="{Binding SelectedBuilding, Converter={StaticResource IsNotNullConverter}}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Border.StrokeShape>
+                    
+                    <StackLayout>
+                        <Label Text="{Binding SelectedBuilding.Name}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#333"/>
+                        <Label Text="{Binding SelectedBuilding.Location}"
+                               FontSize="14"
+                               TextColor="#666"/>
+                        <Label Text="{Binding SelectedBuilding.Description}"
+                               FontSize="12"
+                               TextColor="#999"/>
+                    </StackLayout>
+                </Border>
+
+                <!-- Canteens List -->
+                <CollectionView ItemsSource="{Binding Canteens}"
+                                IsVisible="{Binding HasCanteens}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Canteen">
+                            <Border BackgroundColor="White"
+                                    Stroke="#E0E0E0"
+                                    StrokeThickness="1"
+                                    Margin="0,5"
+                                    Padding="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="15"/>
+                                </Border.StrokeShape>
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CanteensViewModel}}, Path=SelectCanteenCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Canteen Image -->
+                                    <Image Grid.Column="0"
+                                           Source="{Binding ImageUrl}"
+                                           HeightRequest="80"
+                                           WidthRequest="80"
+                                           Aspect="AspectFill"
+                                           Margin="15">
+                                        <Image.Clip>
+                                            <RoundRectangleGeometry CornerRadius="10" 
+                                                                    Rect="0,0,80,80"/>
+                                        </Image.Clip>
+                                    </Image>
+
+                                    <!-- Canteen Info -->
+                                    <StackLayout Grid.Column="1" 
+                                                 Padding="10,15"
+                                                 Spacing="5">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               TextColor="#333"/>
+
+                                        <Label Text="{Binding Description}"
+                                               FontSize="14"
+                                               TextColor="#666"
+                                               LineBreakMode="WordWrap"/>
+
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="📍"
+                                                   FontSize="12"/>
+                                            <Label Text="{Binding Location}"
+                                                   FontSize="12"
+                                                   TextColor="#999"/>
+                                        </StackLayout>
+
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="🕒"
+                                                   FontSize="12"/>
+                                            <Label Text="{Binding FormattedOpeningHours}"
+                                                   FontSize="12"
+                                                   TextColor="#999"/>
+                                        </StackLayout>
+                                    </StackLayout>
+
+                                    <!-- Status Indicator -->
+                                    <StackLayout Grid.Column="2" 
+                                                 VerticalOptions="Center"
+                                                 Padding="15">
+                                        <Border BackgroundColor="{Binding IsCurrentlyOpen, Converter={StaticResource BoolToColorConverter}}"
+                                                Padding="8,4">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="12"/>
+                                            </Border.StrokeShape>
+                                            <Label Text="{Binding IsCurrentlyOpen, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Open|Closed'}"
+                                                   FontSize="10"
+                                                   TextColor="White"
+                                                   FontAttributes="Bold"/>
+                                        </Border>
+
+                                        <Label Text="→"
+                                               FontSize="20"
+                                               TextColor="#2196F3"
+                                               HorizontalOptions="Center"
+                                               Margin="0,10,0,0"/>
+                                    </StackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Empty State -->
+                <StackLayout IsVisible="{Binding HasCanteens, Converter={StaticResource InvertedBoolConverter}}"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Margin="0,50,0,0">
+                    <Label Text="🍽️"
+                           FontSize="48"
+                           HorizontalOptions="Center"/>
+                    <Label Text="No canteens available"
+                           FontSize="18"
+                           TextColor="#666"
+                           HorizontalOptions="Center"/>
+                    <Label Text="in this building"
+                           FontSize="14"
+                           TextColor="#999"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+
+            </StackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

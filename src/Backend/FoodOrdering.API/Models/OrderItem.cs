@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoodOrdering.API.Models
 {
@@ -10,7 +10,7 @@ namespace FoodOrdering.API.Models
         public int OrderId { get; set; }
 
         [Required]
-        public int MenuItomId { get; set; }
+        public int MenuItemId { get; set; }
 
         [Required]
         public int Quantity { get; set; }
@@ -22,6 +22,6 @@ namespace FoodOrdering.API.Models
 
         // Navigation properties
         public Order Order { get; set; } = null!;
-        public MenuItom MenuItom { get; set; } = null!;
+        public MenuItem MenuItem { get; set; } = null!;
     }
 }

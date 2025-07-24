@@ -1,4 +1,4 @@
-﻿using FoodOrderingUI.Models;
+using FoodOrderingUI.Models;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -68,10 +68,63 @@ namespace FoodOrderingUI.Services
             return authResponse!;
         }
 
+        public async Task<List<Building>> GetBuildingsAsync()
+        {
+            var response = await _httpClient.GetAsync("buildings");
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var buildings = JsonSerializer.Deserialize<List<Building>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return buildings ?? new List<Building>();
+        }
+
+        public async Task<Building> GetBuildingAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"buildings/{id}");
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var building = JsonSerializer.Deserialize<Building>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return building!;
+        }
+
+        public async Task<List<Canteen>> GetCanteensAsync()
+        {
+            var response = await _httpClient.GetAsync("canteens");
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var canteens = JsonSerializer.Deserialize<List<Canteen>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return canteens ?? new List<Canteen>();
+        }
+
+        public async Task<List<Canteen>> GetCanteensByBuildingAsync(int buildingId)
+        {
+            var response = await _httpClient.GetAsync($"canteens/building/{buildingId}");
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var canteens = JsonSerializer.Deserialize<List<Canteen>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return canteens ?? new List<Canteen>();
+        }
+
+        public async Task<Canteen> GetCanteenAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"canteens/{id}");
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var canteen = JsonSerializer.Deserialize<Canteen>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return canteen!;
+        }
+
         public async Task<List<MenuItem>> GetMenuItemsAsync()
         {
-            await SetAuthenticationHeader();
-
             var response = await _httpClient.GetAsync("menu");
             response.EnsureSuccessStatusCode();
 
@@ -81,11 +134,20 @@ namespace FoodOrderingUI.Services
             return menuItems ?? new List<MenuItem>();
         }
 
-        public async Task<List<MenuItem>> GetMenuByVendorAsync(string vendorId)
+        public async Task<List<MenuItem>> GetMenuByCanteenAsync(int canteenId)
         {
-            await SetAuthenticationHeader();
+            var response = await _httpClient.GetAsync($"menu/canteen/{canteenId}");
+            response.EnsureSuccessStatusCode();
 
-            var response = await _httpClient.GetAsync($"menu/vendor/{vendorId}");
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var menuItems = JsonSerializer.Deserialize<List<MenuItem>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return menuItems ?? new List<MenuItem>();
+        }
+
+        public async Task<List<MenuItem>> GetMenuByCanteenAndCategoryAsync(int canteenId, int category)
+        {
+            var response = await _httpClient.GetAsync($"menu/canteen/{canteenId}/category/{category}");
             response.EnsureSuccessStatusCode();
 
             var responseContent = await response.Content.ReadAsStringAsync();

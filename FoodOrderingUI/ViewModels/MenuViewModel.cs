@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FoodOrderingUI.Services;
 using System.Collections.ObjectModel;
@@ -6,6 +6,7 @@ using MenuItem = FoodOrderingUI.Models.MenuItem;
 
 namespace FoodOrderingUI.ViewModels
 {
+    [QueryProperty(nameof(CanteenId), "canteenId")]
     public partial class MenuViewModel : BaseViewModel
     {
         private readonly IApiService _apiService;
@@ -18,10 +19,16 @@ namespace FoodOrderingUI.ViewModels
         ObservableCollection<string> categories = new();
 
         [ObservableProperty]
-        string selectedCategory = "All";
+        string selectedCategory = "Breakfast";
 
         [ObservableProperty]
         int cartItemCount;
+
+        [ObservableProperty]
+        int canteenId;
+
+        [ObservableProperty]
+        Canteen? selectedCanteen;
 
         private List<MenuItem> _allMenuItems = new();
 
@@ -39,16 +46,29 @@ namespace FoodOrderingUI.ViewModels
             CartItemCount = _cartService.GetItemCount();
         }
 
+        partial void OnCanteenIdChanged(int value)
+        {
+            if (value > 0)
+            {
+                _ = LoadMenuAsync();
+            }
+        }
+
         [RelayCommand]
         async Task LoadMenuAsync()
         {
-            if (IsBusy) return;
+            if (IsBusy || CanteenId <= 0) return;
 
             try
             {
                 IsBusy = true;
 
-                _allMenuItems = await _apiService.GetMenuItemsAsync();
+                // Load canteen details
+                SelectedCanteen = await _apiService.GetCanteenAsync(CanteenId);
+                Title = $"Menu - {SelectedCanteen?.Name}";
+
+                // Load menu items
+                _allMenuItems = await _apiService.GetMenuByCanteenAsync(CanteenId);
                 MenuItems.Clear();
 
                 foreach (var item in _allMenuItems)
@@ -57,6 +77,7 @@ namespace FoodOrderingUI.ViewModels
                 }
 
                 LoadCategories();
+                FilterByCategory("Breakfast"); // Default to breakfast
                 CartItemCount = _cartService.GetItemCount();
             }
             catch (Exception ex)
@@ -72,16 +93,56 @@ namespace FoodOrderingUI.ViewModels
         private void LoadCategories()
         {
             Categories.Clear();
-            Categories.Add("All");
+            Categories.Add("Breakfast");
+            Categories.Add("Snacks");
+            Categories.Add("Lunch");
+        }
 
-            var uniqueCategories = _allMenuItems
-                .Select(x => x.Category)
-                .Distinct()
-                .OrderBy(x => x);
-
-            foreach (var category in uniqueCategories)
+        private int GetCategoryValue(string categoryName)
+        {
+            return categoryName switch
             {
-                Categories.Add(category);
+                "Breakfast" => 1,
+                "Snacks" => 2,
+                "Lunch" => 3,
+                _ => 1
+            };
+        }
+
+        private bool MatchesCategory(MenuItem item, string categoryName)
+        {
+            if (categoryName == "All") return true;
+            
+            var categoryValue = GetCategoryValue(categoryName);
+            return item.Category == categoryValue;
+        }
+
+        [RelayCommand]
+        async Task FilterByCategoryAsync(string category)
+        {
+            if (IsBusy || CanteenId <= 0) return;
+
+            try
+            {
+                IsBusy = true;
+                SelectedCategory = category;
+                
+                var categoryValue = GetCategoryValue(category);
+                var filteredItems = await _apiService.GetMenuByCanteenAndCategoryAsync(CanteenId, categoryValue);
+                
+                MenuItems.Clear();
+                foreach (var item in filteredItems)
+                {
+                    MenuItems.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
@@ -91,9 +152,7 @@ namespace FoodOrderingUI.ViewModels
             SelectedCategory = category;
             MenuItems.Clear();
 
-            var filteredItems = category == "All"
-                ? _allMenuItems
-                : _allMenuItems.Where(x => x.Category == category);
+            var filteredItems = _allMenuItems.Where(x => MatchesCategory(x, category));
 
             foreach (var item in filteredItems)
             {

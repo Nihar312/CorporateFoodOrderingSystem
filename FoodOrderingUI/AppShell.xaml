@@ -5,36 +5,40 @@
        xmlns:local="clr-namespace:FoodOrderingUI.Views"
        Title="Food Ordering">
 
+    <ShellContent Title="Splash"
+                  Route="splash"
+                  ContentTemplate="{DataTemplate local:SplashPage}"
+                  FlyoutItemIsVisible="False" />
+
     <ShellContent Title="Login"
                   Route="login"
                   ContentTemplate="{DataTemplate local:LoginPage}"
                   FlyoutItemIsVisible="False" />
 
     <TabBar Route="main">
-        <ShellContent Title="Menu"
-                      Icon="menu.png"
-                      Route="menu"
-                      ContentTemplate="{DataTemplate local:MenuPage}" />
+        <ShellContent Title="Buildings"
+                      Icon="building.png"
+                      Route="buildings"
+                      ContentTemplate="{DataTemplate local:BuildingsPage}" />
 
         <ShellContent Title="Orders"
                       Icon="orders.png"
                       Route="orders"
                       ContentTemplate="{DataTemplate local:OrdersPage}" />
-
-        <!--<ShellContent Title="Profile"
-                      Icon="profile.png"
-                      Route="profile"
-                      ContentTemplate="{DataTemplate local:ProfilePage}" />-->
     </TabBar>
+
+    <ShellContent Title="Canteens"
+                  Route="canteens"
+                  ContentTemplate="{DataTemplate local:CanteensPage}"
+                  FlyoutItemIsVisible="False" />
+
+    <ShellContent Title="Menu"
+                  Route="menu"
+                  ContentTemplate="{DataTemplate local:MenuPage}"
+                  FlyoutItemIsVisible="False" />
 
     <ShellContent Title="Cart"
                   Route="cart"
                   ContentTemplate="{DataTemplate local:CartPage}"
                   FlyoutItemIsVisible="False" />
-
-    <!--<ShellContent Title="Vendor Orders"
-                  Route="vendor-orders"
-                  ContentTemplate="{DataTemplate local:VendorOrdersPage}"
-                  FlyoutItemIsVisible="False" />-->
-
 </Shell>
