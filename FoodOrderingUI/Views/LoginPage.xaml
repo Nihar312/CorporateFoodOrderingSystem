@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="FoodOrderingUI.Views.LoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FoodOrderingUI.ViewModels"
+             x:DataType="vm:LoginViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+
+            <!-- Logo -->
+            <Image Source="logo.png" 
+                   HeightRequest="120" 
+                   HorizontalOptions="Center" 
+                   Margin="0,20,0,40"/>
+
+            <!-- Email -->
+            <Entry x:Name="EmailEntry"
+                   Text="{Binding Email}"
+                   Placeholder="Email"
+                   Keyboard="Email"
+                   ReturnType="Next"
+                   Completed="EmailEntry_Completed"/>
+
+            <!-- Password -->
+            <Entry x:Name="PasswordEntry"
+                   Text="{Binding Password}"
+                   Placeholder="Password"
+                   IsPassword="True"
+                   ReturnType="Done"/>
+
+            <!-- Registration Fields (visible only in register mode) -->
+            <StackLayout IsVisible="{Binding IsLoginMode, Converter={StaticResource InvertedBoolConverter}}">
+                <Entry Text="{Binding FirstName}"
+                       Placeholder="First Name"
+                       ReturnType="Next"/>
+
+                <Entry Text="{Binding LastName}"
+                       Placeholder="Last Name"
+                       ReturnType="Next"/>
+
+                <Entry Text="{Binding CompanyName}"
+                       Placeholder="Company Name (Optional)"
+                       ReturnType="Done"/>
+            </StackLayout>
+
+            <!-- Login/Register Button -->
+            <Button Text="{Binding IsLoginMode, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Login|Register'}"
+                    Command="{Binding LoginCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                    BackgroundColor="#2196F3"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="50"/>
+
+            <!-- Activity Indicator -->
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                               IsRunning="{Binding IsBusy}"
+                               Color="#2196F3"/>
+
+            <!-- Toggle Mode Button -->
+            <Button Text="{Binding IsLoginMode, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Need an account? Register|Already have an account? Login'}"
+                    Command="{Binding ToggleModeCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="#2196F3"/>
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

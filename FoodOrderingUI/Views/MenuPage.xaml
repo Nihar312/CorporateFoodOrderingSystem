@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="FoodOrderingUI.Views.MenuPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FoodOrderingUI.ViewModels"
+             xmlns:models="clr-namespace:FoodOrderingUI.Models"
+             x:DataType="vm:MenuViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+                     IconImageSource="cart.png"
+                     Command="{Binding ViewCartCommand}">
+            <ToolbarItem.Text>
+                <MultiBinding StringFormat="Cart ({0})">
+                    <Binding Path="CartItemCount"/>
+                </MultiBinding>
+            </ToolbarItem.Text>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
+    <RefreshView Command="{Binding LoadMenuCommand}"
+                 IsRefreshing="{Binding IsBusy}">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Category Filter -->
+            <CollectionView Grid.Row="0"
+                            ItemsSource="{Binding Categories}"
+                            SelectedItem="{Binding SelectedCategory}"
+                            SelectionMode="Single"
+                            SelectionChangedCommand="{Binding FilterByCategoryCommand}"
+                            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}"
+                            HeightRequest="50"
+                            Margin="10,10,10,0">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BackgroundColor="{Binding ., Converter={StaticResource CategoryColorConverter}}"
+                                Stroke="#E0E0E0"
+                                StrokeThickness="1"
+                                Padding="15,8">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="20"/>
+                            </Border.StrokeShape>
+                            <Label Text="{Binding .}"
+                                   TextColor="{Binding ., Converter={StaticResource CategoryTextColorConverter}}"
+                                   FontSize="14"
+                                   HorizontalOptions="Center"/>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Menu Items -->
+            <CollectionView Grid.Row="1"
+                            ItemsSource="{Binding MenuItems}"
+                            Margin="10">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:MenuItem">
+                        <Border BackgroundColor="White"
+                                Stroke="#E0E0E0"
+                                StrokeThickness="1"
+                                Margin="0,5"
+                                Padding="15">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10"/>
+                            </Border.StrokeShape>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackLayout Grid.Column="0">
+                                    <Label Text="{Binding Name}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="#333"/>
+
+                                    <Label Text="{Binding Description}"
+                                           FontSize="14"
+                                           TextColor="#666"
+                                           LineBreakMode="WordWrap"/>
+
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="{Binding FormattedPrice}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="#2196F3"/>
+
+                                        <Label Text="{Binding Category}"
+                                               FontSize="12"
+                                               TextColor="#999"
+                                               BackgroundColor="#F5F5F5"
+                                               Padding="8,4"
+                                               HorizontalOptions="End">
+                                            <Label.Triggers>
+                                                <Trigger TargetType="Label" Property="Text" Value="">
+                                                    <Setter Property="IsVisible" Value="False"/>
+                                                </Trigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </StackLayout>
+                                </StackLayout>
+
+                                <Button Grid.Column="1"
+                                        Text="Add to Cart"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MenuViewModel}}, Path=AddToCartCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="#4CAF50"
+                                        TextColor="White"
+                                        CornerRadius="20"
+                                        WidthRequest="100"
+                                        HeightRequest="40"
+                                        FontSize="12"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Empty State -->
+            <StackLayout Grid.Row="1"
+                         IsVisible="{Binding MenuItems.Count, Converter={StaticResource IntToBoolConverter}}"
+                         VerticalOptions="Center"
+                         HorizontalOptions="Center">
+                <Label Text="No menu items available"
+                       FontSize="18"
+                       TextColor="#666"
+                       HorizontalOptions="Center"/>
+            </StackLayout>
+
+        </Grid>
+    </RefreshView>
+</ContentPage>

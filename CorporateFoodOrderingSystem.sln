@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodOrdering.API", "src\Backend\FoodOrdering.API\FoodOrdering.API.csproj", "{D1FDCD74-847F-4A8B-9C13-24713AE54394}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodOrdering.MAUI", "src\Mobile\FoodOrdering.MAUI\FoodOrdering.MAUI.csproj", "{B5F67A95-0FAC-4E95-8523-A70C22BF5094}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FoodOrderingUI", "FoodOrderingUI\FoodOrderingUI.csproj", "{A9FFC098-4506-2F08-9FC6-7CC5347138A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +17,12 @@ Global
 		{D1FDCD74-847F-4A8B-9C13-24713AE54394}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1FDCD74-847F-4A8B-9C13-24713AE54394}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1FDCD74-847F-4A8B-9C13-24713AE54394}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5F67A95-0FAC-4E95-8523-A70C22BF5094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5F67A95-0FAC-4E95-8523-A70C22BF5094}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5F67A95-0FAC-4E95-8523-A70C22BF5094}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{B5F67A95-0FAC-4E95-8523-A70C22BF5094}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5F67A95-0FAC-4E95-8523-A70C22BF5094}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5F67A95-0FAC-4E95-8523-A70C22BF5094}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A9FFC098-4506-2F08-9FC6-7CC5347138A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9FFC098-4506-2F08-9FC6-7CC5347138A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9FFC098-4506-2F08-9FC6-7CC5347138A6}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A9FFC098-4506-2F08-9FC6-7CC5347138A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9FFC098-4506-2F08-9FC6-7CC5347138A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9FFC098-4506-2F08-9FC6-7CC5347138A6}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
