@@ -14,11 +14,12 @@ namespace FoodOrdering.API.Services
         private readonly ILogger<OrderService> _logger;
 
         public OrderService(ApplicationDbContext context, IMapper mapper,
-            INotificationService notificationService, ILogger<OrderService> logger)
+            //INotificationService notificationService, 
+            ILogger<OrderService> logger)
         {
             _context = context;
             _mapper = mapper;
-            _notificationService = notificationService;
+            //_notificationService = notificationService;
             _logger = logger;
         }
 
@@ -65,13 +66,13 @@ namespace FoodOrdering.API.Services
 
                 await transaction.CommitAsync();
 
-                // Send notification to vendor
-                await _notificationService.SendOrderNotificationAsync(
-                    orderDto.VendorId,
-                    "New Order Received",
-                    $"You have received a new order worth ₹{totalAmount}",
-                    order.Id
-                );
+                //// Send notification to vendor
+                //await _notificationService.SendOrderNotificationAsync(
+                //    orderDto.VendorId,
+                //    "New Order Received",
+                //    $"You have received a new order worth ₹{totalAmount}",
+                //    order.Id
+                //);
 
                 return await GetOrderByIdAsync(order.Id);
             }
